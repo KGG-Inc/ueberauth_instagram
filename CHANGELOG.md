@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v0.8.0 - 2019-03-09
 
 * Add option to specify scheme for user avatar URL
-* Stop sending empty params to the Facebook auth dialog
+* Stop sending empty params to the Instagram auth dialog
 
 ## v0.7.0 - 2017-07-18
 

@@ -1,14 +1,14 @@
-defmodule Ueberauth.Facebook.Mixfile do
+defmodule Ueberauth.Instagram.Mixfile do
   use Mix.Project
 
-  @source_url "https://github.com/ueberauth/ueberauth_facebook"
+  @source_url "https://github.com/ueberauth/ueberauth_instagram"
   @version "0.9.0"
 
   def project do
     [
-      app: :ueberauth_facebook,
+      app: :ueberauth_instagram,
       version: @version,
-      name: "Überauth Facebook",
+      name: "Überauth Instagram",
       elixir: "~> 1.3",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -51,12 +51,12 @@ defmodule Ueberauth.Facebook.Mixfile do
 
   defp package do
     [
-      description: "An Überauth strategy for Facebook authentication.",
+      description: "An Überauth strategy for Instagram authentication.",
       files: ["lib", "mix.exs", "README.md", "CHANGELOG.md", "CONTRIBUTING.md", "LICENSE"],
       maintainers: ["Sean Callan"],
       licenses: ["MIT"],
       links: %{
-        Changelog: "https://hexdocs.pm/ueberauth_facebook/changelog.html",
+        Changelog: "https://hexdocs.pm/ueberauth_instagram/changelog.html",
         GitHub: @source_url
       }
     ]

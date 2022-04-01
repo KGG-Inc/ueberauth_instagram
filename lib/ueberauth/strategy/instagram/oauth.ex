@@ -1,33 +1,33 @@
-defmodule Ueberauth.Strategy.Facebook.OAuth do
+defmodule Ueberauth.Strategy.Instagram.OAuth do
   @moduledoc """
-  OAuth2 for Facebook.
+  OAuth2 for Instagram.
 
   Add `:client_id` and `:client_secret` to your configuration:
 
-      config :ueberauth, Ueberauth.Strategy.Facebook.OAuth,
-        client_id: System.get_env("FACEBOOK_APP_ID"),
-        client_secret: System.get_env("FACEBOOK_APP_SECRET")
+      config :ueberauth, Ueberauth.Strategy.Instagram.OAuth,
+        client_id: System.get_env("INSTAGRAM_APP_iD"),
+        client_secret: System.get_env("INSTAGRAM_APP_SECRET")
 
   """
   use OAuth2.Strategy
-
+https://api.instagram.com/oauth/authorize
   @defaults [
     strategy: __MODULE__,
-    site: "https://graph.facebook.com",
-    authorize_url: "https://www.facebook.com/dialog/oauth",
-    token_url: "/v2.8/oauth/access_token",
-    token_method: :get
+    site: "https://api.instagram.com",
+    authorize_url: "https://api.instagram.com/oauth/authorize",
+    token_url: "/oauth/access_token",
+    token_method: :post
   ]
 
   @doc """
-  Construct a client for requests to Facebook.
+  Construct a client for requests to Instagram.
 
-  This will be setup automatically for you in `Ueberauth.Strategy.Facebook`.
+  This will be setup automatically for you in `Ueberauth.Strategy.Instagram`.
   These options are only useful for usage outside the normal callback phase
   of Ueberauth.
   """
   def client(opts \\ []) do
-    config = Application.get_env(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, [])
+    config = Application.get_env(:ueberauth, Ueberauth.Strategy.Instagram.OAuth, [])
 
     opts =
       @defaults

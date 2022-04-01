@@ -1,6 +1,6 @@
-defmodule Ueberauth.Strategy.Facebook do
+defmodule Ueberauth.Strategy.Instagram do
   @moduledoc """
-  Facebook Strategy for Überauth.
+  Instagram Strategy for Überauth.
   """
 
   use Ueberauth.Strategy,
@@ -19,7 +19,7 @@ defmodule Ueberauth.Strategy.Facebook do
   alias Ueberauth.Auth.Extra
 
   @doc """
-  Handles initial request for Facebook authentication.
+  Handles initial request for Instagram authentication.
   """
   def handle_request!(conn) do
     allowed_params =
@@ -39,22 +39,22 @@ defmodule Ueberauth.Strategy.Facebook do
       |> Keyword.put(:redirect_uri, callback_url(conn))
       |> with_state_param(conn)
 
-    redirect!(conn, Ueberauth.Strategy.Facebook.OAuth.authorize_url!(params, opts))
+    redirect!(conn, Ueberauth.Strategy.Instagram.OAuth.authorize_url!(params, opts))
   end
 
   @doc """
-  Handles the callback from Facebook.
+  Handles the callback from Instagram.
   """
   def handle_callback!(%Plug.Conn{params: %{"code" => code}} = conn) do
     opts = oauth_client_options_from_conn(conn)
 
     config =
       :ueberauth
-      |> Application.get_env(Ueberauth.Strategy.Facebook.OAuth, [])
+      |> Application.get_env(Ueberauth.Strategy.Instagram.OAuth, [])
       |> Keyword.merge(opts)
 
     try do
-      client = Ueberauth.Strategy.Facebook.OAuth.get_token!([code: code], opts)
+      client = Ueberauth.Strategy.Instagram.OAuth.get_token!([code: code], opts)
       token = client.token
 
       if token.access_token == nil do
@@ -78,8 +78,8 @@ defmodule Ueberauth.Strategy.Facebook do
   @doc false
   def handle_cleanup!(conn) do
     conn
-    |> put_private(:facebook_user, nil)
-    |> put_private(:facebook_token, nil)
+    |> put_private(:instagram_user, nil)
+    |> put_private(:instagram_token, nil)
   end
 
   @doc """
@@ -91,14 +91,14 @@ defmodule Ueberauth.Strategy.Facebook do
       |> option(:uid_field)
       |> to_string
 
-    conn.private.facebook_user[uid_field]
+    conn.private.instagram_user[uid_field]
   end
 
   @doc """
-  Includes the credentials from the facebook response.
+  Includes the credentials from the instagram response.
   """
   def credentials(conn) do
-    token = conn.private.facebook_token
+    token = conn.private.instagram_token
     scopes = token.other_params["scope"] || ""
     scopes = String.split(scopes, ",")
 
@@ -115,7 +115,7 @@ defmodule Ueberauth.Strategy.Facebook do
   `Ueberauth.Auth` struct.
   """
   def info(conn) do
-    user = conn.private.facebook_user
+    user = conn.private.instagram_user
 
     %Info{
       description: user["bio"],
@@ -125,7 +125,7 @@ defmodule Ueberauth.Strategy.Facebook do
       last_name: user["last_name"],
       name: user["name"],
       urls: %{
-        facebook: user["link"],
+        instagram: user["link"],
         website: user["website"]
       }
     }
@@ -133,23 +133,23 @@ defmodule Ueberauth.Strategy.Facebook do
 
   @doc """
   Stores the raw information (including the token) obtained from
-  the facebook callback.
+  the instagram callback.
   """
   def extra(conn) do
     %Extra{
       raw_info: %{
-        token: conn.private.facebook_token,
-        user: conn.private.facebook_user
+        token: conn.private.instagram_token,
+        user: conn.private.instagram_user
       }
     }
   end
 
   defp fetch_image(uid) do
-    "https://graph.facebook.com/#{uid}/picture?type=large"
+    "https://graph.instagram.com/#{uid}/picture?type=large"
   end
 
   defp fetch_user(conn, client, config) do
-    conn = put_private(conn, :facebook_token, client.token)
+    conn = put_private(conn, :instagram_token, client.token)
     query = user_query(conn, client.token, config)
     path = "/me?#{query}"
 
@@ -159,7 +159,7 @@ defmodule Ueberauth.Strategy.Facebook do
 
       {:ok, %OAuth2.Response{status_code: status_code, body: user}}
       when status_code in 200..399 ->
-        put_private(conn, :facebook_user, user)
+        put_private(conn, :instagram_user, user)
 
       {:error, %OAuth2.Error{reason: reason}} ->
         set_errors!(conn, [error("OAuth2", reason)])
