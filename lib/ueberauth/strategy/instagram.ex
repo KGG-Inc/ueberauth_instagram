@@ -148,7 +148,7 @@ defmodule Ueberauth.Strategy.Instagram do
     "https://graph.instagram.com/#{uid}/picture?type=large"
   end
 
-  defp fetch_user(conn, client, config) do
+  defp fetch_user(conn, client, _config) do
   
     conn = put_private(conn, :instagram_token, client.token)
     
@@ -167,42 +167,6 @@ defmodule Ueberauth.Strategy.Instagram do
 
       {:error, %OAuth2.Error{reason: reason}} ->
         set_errors!(conn, [error("OAuth2", reason)])
-    end
-  end
-
-  defp user_query(conn, token, config) do
-    %{"appsecret_proof" => appsecret_proof(token, config)}
-    |> Map.merge(query_params(conn, :locale))
-    |> Map.merge(query_params(conn, :profile))
-    |> URI.encode_query()
-  end
-
-  defp appsecret_proof(token, config) do
-    client_secret = Keyword.get(config, :client_secret)
-
-    token.access_token
-    |> hmac(:sha256, client_secret)
-    |> Base.encode16(case: :lower)
-  end
-
-  @compile {:no_warn_undefined, {:crypto, :mac, 4}}
-  @compile {:no_warn_undefined, {:crypto, :hmac, 3}}
-  defp hmac(data, type, key) do
-    if function_exported?(:crypto, :mac, 4) do
-      :crypto.mac(:hmac, type, key, data)
-    else
-      :crypto.hmac(type, key, data)
-    end
-  end
-
-  defp query_params(conn, :profile) do
-    %{"fields" => option(conn, :profile_fields)}
-  end
-
-  defp query_params(conn, :locale) do
-    case option(conn, :locale) do
-      nil -> %{}
-      locale -> %{"locale" => locale}
     end
   end
 
