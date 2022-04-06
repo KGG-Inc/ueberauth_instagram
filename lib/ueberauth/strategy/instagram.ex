@@ -151,11 +151,8 @@ defmodule Ueberauth.Strategy.Instagram do
   defp fetch_user(conn, client, config) do
   
     conn = put_private(conn, :instagram_token, client.token)
-    query = user_query(conn, client.token, config)
-    path = "/"
-
+    
     put_private(conn, :instagram_user, client.token.other_params)
-
 
     conn = put_private(conn, :instagram_token, client.token)
     path = "https://graph.instagram.com/me?fields=id,username,account_type&access_token=#{client.token.access_token}"
