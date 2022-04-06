@@ -10,7 +10,7 @@ defmodule Ueberauth.Strategy.Instagram.OAuth do
 
   """
   use OAuth2.Strategy
-https://api.instagram.com/oauth/authorize
+
   @defaults [
     strategy: __MODULE__,
     site: "https://api.instagram.com",

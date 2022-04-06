@@ -4,8 +4,8 @@ defmodule Ueberauth.Strategy.Instagram do
   """
 
   use Ueberauth.Strategy,
-    default_scope: "email,public_profile",
-    profile_fields: "id,email,gender,link,locale,name,timezone,updated_time,verified",
+    default_scope: "user_profile",
+    profile_fields: "user_id",
     uid_field: :id,
     allowed_request_params: [
       :auth_type,
@@ -54,9 +54,9 @@ defmodule Ueberauth.Strategy.Instagram do
       |> Keyword.merge(opts)
 
     try do
+
       client = Ueberauth.Strategy.Instagram.OAuth.get_token!([code: code], opts)
       token = client.token
-
       if token.access_token == nil do
         err = token.other_params["error"]
         desc = token.other_params["error_description"]
@@ -149,9 +149,16 @@ defmodule Ueberauth.Strategy.Instagram do
   end
 
   defp fetch_user(conn, client, config) do
+  
     conn = put_private(conn, :instagram_token, client.token)
     query = user_query(conn, client.token, config)
-    path = "/me?#{query}"
+    path = "/"
+
+    put_private(conn, :instagram_user, client.token.other_params)
+
+
+    conn = put_private(conn, :instagram_token, client.token)
+    path = "https://graph.instagram.com/me?fields=id,username,account_type&access_token=#{client.token.access_token}"
 
     case OAuth2.Client.get(client, path) do
       {:ok, %OAuth2.Response{status_code: 401, body: _body}} ->
